@@ -10,11 +10,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ReservationService {
-     static  List<Reservation> reservations = new LinkedList<Reservation>();
-      static List<IRoom> rooms = new LinkedList<IRoom>();
+       List<Reservation> reservations = new LinkedList<Reservation>();
+        List<IRoom> rooms = new LinkedList<IRoom>();
+    private ReservationService(){}
 
     private static ReservationService reservationService=null ;
-    public static Collection<IRoom>getALLRooms()
+    public static ReservationService getInstance()
+    {
+        if (reservationService == null)
+            reservationService = new ReservationService();
+
+        return reservationService;
+    }
+    public  Collection<IRoom>getALLRooms()
     {
         return rooms;
     }
@@ -23,11 +31,11 @@ public class ReservationService {
     }
 
 
-    public  static void addRoom(IRoom room){
+    public void addRoom(IRoom room){
         rooms.add(room);
 
     }
-    public static IRoom getARoom(String roomId)
+    public  IRoom getARoom(String roomId)
     {
         for (IRoom room:rooms)
         {
@@ -44,9 +52,11 @@ public class ReservationService {
 
             if (isRoomAvailable(CheckInDate, CheckOutDate, room)) {
                 Reservation rs=new Reservation(customer,room,CheckInDate,CheckOutDate);
-                getReservations().add(rs);
+                reservations.add(rs);
+
                 return rs;
             }
+
 
         System.out.println("this room not availbale");
         return null;

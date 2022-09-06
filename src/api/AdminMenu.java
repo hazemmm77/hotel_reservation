@@ -103,7 +103,8 @@ public class AdminMenu {
                         System.out.println("enter anther room Y/N");
                         flag = input.nextLine();
                     }while ((flag.equals("Y")) || (flag.equals("y")));
-                    AdminResource.addRoom(L);
+                    AdminResource A=AdminResource.getInstance();
+                    A.addRoom(L);
                     break;
                 }
                 catch(Exception e) {
