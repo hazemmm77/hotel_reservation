@@ -29,10 +29,10 @@ public class ReservationService {
     }
     public static IRoom getARoom(String roomId)
     {
-        for (Reservation reserv:reservations)
+        for (IRoom room:rooms)
         {
-            if (roomId==reserv.getRoom().getRoomNumber()) {
-                return (reserv.getRoom());
+            if (room.getRoomNumber().equals(roomId)) {
+                return (room);
             }
             }
         return null;
@@ -42,22 +42,53 @@ public class ReservationService {
 
     public static Reservation reserveARoom(Customer customer, IRoom room, Date CheckInDate, Date CheckOutDate){
 
-        Reservation rs=new Reservation(customer,room,CheckInDate,CheckOutDate);
-        reservations.add(rs);
-        return rs;
+            if (isRoomAvailable(CheckInDate, CheckOutDate, room)) {
+                Reservation rs=new Reservation(customer,room,CheckInDate,CheckOutDate);
+                reservations.add(rs);
+                return rs;
+            }
+
+        System.out.println("this room not availbale");
+        return null;
+
+
+
 
     }
     public static Collection<IRoom>findRooms(Date CheckInDate,Date CheckOutDate){
-        List<IRoom> roomstemp = new LinkedList<IRoom>();
-        for(Reservation R:reservations) {
-            if((R.getCheckInDate()==CheckInDate) && (R.getCheckOutDate()==CheckOutDate)){
-                roomstemp.add(R.getRoom());
+        Collection<IRoom> openRooms = new LinkedList<>();
+        if (reservations.isEmpty()) {
+            return rooms; //no reservation has been made. all rooms are
+            //free
+        }
+        for (IRoom room : rooms) {
+            if (isRoomAvailable(CheckInDate, CheckOutDate, room)) {
+                openRooms.add(room);
             }
         }
-        return roomstemp;
-        }
+        return openRooms;
+    }
+    public static boolean isRoomAvailable(Date start, Date end, IRoom room) {
+        for (Reservation reservation : reservations) {
+            IRoom currentRoom = reservation.getRoom();
+            //if room has been reserved, check if room will be free by
+            //start and end date
+            if (room.getRoomNumber().equals(currentRoom.getRoomNumber())) {
+                if (isDateConflictingWithReservation(start, end, reservation)) {
+                    return false;
+                }
+            }
 
-    public static Collection<Reservation>getCustomersReservation(Customer customer){
+        }
+        return true;
+    }
+    static boolean isDateConflictingWithReservation(Date start, Date end, Reservation reservation) {
+        return !(end.before(reservation.getCheckInDate()) || start.after(reservation.getCheckOutDate()));
+    }
+
+
+
+        public static Collection<Reservation>getCustomersReservation(Customer customer){
         List<Reservation> customerReservations = new LinkedList<Reservation>();
         for ( Reservation cust : reservations){
             if (customer==cust.getCustomer())

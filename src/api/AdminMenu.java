@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class AdminMenu {
+     public static List<IRoom>L=new ArrayList<>();
     public static void start(){
         Scanner input = new Scanner(System.in);
         System.out.println("**********************************************************************************");
@@ -25,14 +26,16 @@ public class AdminMenu {
     public  static void startAction(String option){
         Scanner input = new Scanner(System.in);
 
+
         switch (option) {
             case "1":
                 try{
                     for(Customer temp: AdminResource.getALLCustomers())
                     {
                         System.out.println(temp);
-                        break;
+
                     }
+                    break;
 
                 }
                 catch(Exception e) {
@@ -44,8 +47,8 @@ public class AdminMenu {
                     for(IRoom room: AdminResource.getALLRooms())
                     {
                         System.out.println(room);
-                        break;
                     }
+                    break;
 
 
                 }
@@ -65,28 +68,41 @@ public class AdminMenu {
                     break;
                 }
             case "4":
+                String flag;
                 try{
-                    System.out.println("enter Room number");
-                    String roomid = input.nextLine();
-                    System.out.println("enter Room Price");
-                    String price=input.nextLine();
-                    Room room=new Room(roomid,Double.parseDouble(price));
-                    List<IRoom> L=new ArrayList<IRoom>();
-                    L.add(room);
-                    System.out.println("enter anther room Y/N");
-                    String flag=input.nextLine();
-                    while (flag=="Y" || flag=="y"){
+
+
+                    int x=0;
+                    do {
                         System.out.println("enter Room number");
-                        roomid = input.nextLine();
-                        System.out.println("enter Room Price");
-                        price=input.nextLine();
-                        room=new Room(roomid,Double.parseDouble(price));
+                        final String roomid = input.nextLine();
+                        for (IRoom room:L) {
+                            if (room.getRoomNumber().equals(roomid)) {
+                                System.out.println("error:this room ID is already exit you cannot create it");
+                                x=1;
+                                break;
+                            }
+                        }
+                        if (x!=1) {
+                            System.out.println("enter Room Price");
+                            String price = input.nextLine();
+                            System.out.println("enter room type 1 for SINGEL, and 2 for DOUBLE");
+                            String temp = "SINGEL";
+                            String type = input.nextLine();
+                            RoomType roomtype;
+                            if (type.equals("1")) {
+                                roomtype = RoomType.SINGEL;
+                            } else {
+                                roomtype = RoomType.DOUBLE;
+                            }
+                            IRoom room = new Room(roomid, Double.parseDouble(price), roomtype);
+                            L.add(room);
 
-                        L.add(room);
+                        }
+
                         System.out.println("enter anther room Y/N");
-                        flag=input.nextLine();
-
-                    }
+                        flag = input.nextLine();
+                    }while ((flag.equals("Y")) || (flag.equals("y")));
                     AdminResource.addRoom(L);
                     break;
                 }

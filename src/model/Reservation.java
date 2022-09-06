@@ -16,7 +16,7 @@ public class Reservation {
     @Override
     public String toString()
     {
-        return ("name:"+ getCustomer().getFirstName() +" "+ getCustomer().getLastName() +" "+"room"+ getRoom() +"check IN"+ getCheckInDate().toString()+" "+"check out"+" "+ getCheckOutDate().toString());
+        return ("name:"+ getCustomer().getFirstName() +" "+ getCustomer().getLastName() +" "+"room"+ getRoom() +"check IN "+ getCheckInDate().toString()+" "+"check out "+" "+ getCheckOutDate().toString());
     }
 
     public Customer getCustomer() {

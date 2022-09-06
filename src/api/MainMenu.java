@@ -1,4 +1,5 @@
 package api;
+import model.Customer;
 import model.IRoom;
 import model.Reservation;
 import service.CustomerService;
@@ -37,38 +38,55 @@ public class MainMenu {
         switch (option) {
             case "1":
                 System.out.println("Enter the check in date ");
-                try{
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy" );
-                    Date checkInDate  = formatter.parse(input.nextLine());
+                Collection<IRoom>rooms=new ArrayList<>();
+                try {
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                    Date checkInDate = formatter.parse(input.nextLine());
                     System.out.println("Enter the check out date ");
-                    Date checkOutDate  = formatter.parse(input.nextLine());
-                    Collection<IRoom> temp=HotelResource.findARoom(checkInDate,checkOutDate);
-                    for(IRoom room:temp) {
+                    Date checkOutDate = formatter.parse(input.nextLine());
+
+
+                    rooms = HotelResource.findARoom(checkInDate, checkOutDate);
+                    if(rooms.isEmpty())
+                    {
+                        System.out.println("There is no available rooms");
+                        break;
+                    }
+                    System.out.println("available  rooms");
+                    for (IRoom room : rooms) {
                         System.out.println(room);
                     }
-                    System.out.println("to make Reservation Enter room number");
+                    System.out.println("to make Reservation Enter room number from available rooms");
                     String roomid = input.nextLine();
-                    IRoom room=HotelResource.getRoom(roomid);
-                    System.out.println("Enter Email");
-                    String Email=input.nextLine();
-                    HotelResource.bookARoom(Email,room,checkInDate,checkOutDate);
-                    System.out.println("Reservation is done");
+                    IRoom tempRoom = HotelResource.getRoom(roomid);
+                    System.out.println("enter Email");
+                    String email = input.nextLine();
+                    Reservation r = HotelResource.bookARoom(email, tempRoom, checkInDate, checkOutDate);
+                    System.out.println("your reservation " + r);
                     break;
 
 
-
-
                 }
+
+
                 catch(Exception e) {
                     System.out.println("error is " + e.getMessage());
                 }
             case "2":
                 try {
+                    System.out.println("enter your email");
+                     final String email = input.nextLine();
+                    Customer cust=HotelResource.GetCustomer(email);
                     Collection<Reservation>temp=HotelResource.getAllReservations();
                         for(Reservation res:temp) {
+                            if(res.getCustomer()==cust){
+                            System.out.println("Reservation");
                             System.out.println(res);
                      }
-
+                            break;
+                        }
+                        System.out.println("NO reservation to this customer");
+                        break;
                     }
                 catch(Exception e) {
                     System.out.println("error is " + e.getMessage());
@@ -80,14 +98,16 @@ public class MainMenu {
                     System.out.println("Enter last Name");
                     String lastName=input.nextLine();
                     System.out.println("Enter Email");
-                    String email=input.nextLine();
+                    final String email=input.nextLine();
+                    for(Customer customer:CustomerService.getAllCustomers()) {
+                        if(customer.getEmail().equals(email)) {
+                            System.out.println(" error: This email is already exit");
+                            break;
+                        }
+                        }
                     CustomerService.addCustomer(email,firstName,lastName);
                     break;
-
-
-
-
-                }
+                    }
                 catch(Exception e) {
                     System.out.println("error is " + e.getMessage());
                 }
@@ -102,12 +122,13 @@ public class MainMenu {
                 }
             case "5":
                 try{
-                    exit();
+                    break;
 
 
                 }
                 catch(Exception e) {
                     System.out.println("error is " + e.getMessage());
+                    break;
                 }
 
 

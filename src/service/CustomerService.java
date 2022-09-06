@@ -26,7 +26,7 @@ public  class CustomerService {
     {    Customer temp=null;
         for(Customer cust :customers)
         {
-            if (customerEmail==cust.getEmail())
+            if (cust.getEmail().equals(customerEmail))
             { temp= cust;
 
             }

@@ -26,7 +26,30 @@ public class Customer {
         String text="Name:"+ getFirstName().toString()+" "+ getLastName().toString()+" "+"email:"+" "+ getEmail().toString();
         return text;
     }
-
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+        if ((this.FirstName.equalsIgnoreCase(((Customer) obj).FirstName) &&
+                (this.LastName.equalsIgnoreCase(((Customer) obj).LastName)) &&
+                (this.email.equalsIgnoreCase(((Customer) obj).email)))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + getFirstName().hashCode();
+        result = 31 * result + getLastName().hashCode();
+        result = 31 * result+getEmail().hashCode();
+        return result;
+    }
     public String getFirstName() {
         return FirstName;
     }
